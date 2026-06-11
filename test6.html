@@ -53,44 +53,60 @@
     </div>
 
     <script>
+        // 메인 화면에서 로그인한 실제 유저 닉네임과 시험 제목 가져오기
         const nickname = localStorage.getItem('currentNickname');
+        const examTitle = localStorage.getItem('currentExamTitle') || '청기사파(쉬움)시험';
         
-        if (!nickname) {
-            alert('닉네임을 먼저 입력해야 합니다!');
+        // 닉네임 데이터가 비어있으면 경고창을 띄우고 메인으로 추방
+        if (!nickname || nickname.trim() === '') {
+            alert('닉네임을 먼저 입력해야 시험에 응시할 수 있습니다!');
             window.location.href = 'index.html';
         } else {
+            // 정상 유입 시 닉네임 표시
             document.getElementById('user-name').innerText = nickname;
         }
 
         function submitTest() {
-            // 두 문제 모두 주관식 텍스트 필드에서 가져옵니다.
             const answer1 = document.getElementById('ans1').value.trim();
             const answer2 = document.getElementById('ans2').value.trim();
 
-            // 누락 항목이 있다면 제출을 방지합니다.
             if (!answer1 || !answer2) {
                 alert('모든 문제의 답을 입력해 주세요!');
                 return; 
             }
 
-            // 현재 시간 포맷 만들기
             const now = new Date();
+            // 포맷 오류 없는 날짜 연월일 시분초 문자열 생성
             const timeString = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
 
-            // 데이터 오브젝트 세팅
-            const record = {
-                name: nickname,
-                testName: `청기사파테스트(쉬움) - (답안: Q1-${answer1} / Q2-${answer2})`, 
-                time: timeString
+            const logJsonFormat = {
+                "userId": nickname,
+                "examTitle": examTitle,
+                "answer1": answer1,
+                "answer2": answer2,
+                "submittedAt": timeString
             };
 
-            // LocalStorage에 기록 누적 저장
-            const history = JSON.parse(localStorage.getItem('testHistory')) || [];
-            history.push(record);
-            localStorage.setItem('testHistory', JSON.stringify(history));
+            // 구글 웹 앱 URL 주소로 실시간 전송 (중앙 취합 서버)
+// 구글 웹 앱 URL 주소로 실시간 전송 (headers 항목을 지워 CSP 보안 차단을 우회합니다)
+            fetch('https://script.google.com/macros/s/AKfycbx75hWKiU3RpiVqbNhWHV1YF2JPYhg5wAO2E6UYqglDjgLyWnMxttTaQvwl4vFKiFYS/exec', {
+                method: 'POST',
+                mode: 'no-cors', 
+                body: JSON.stringify(logJsonFormat)
+            })
+            .then(() => {
+                // 본인 브라우저 메인 화면 실시간 동기화를 위한 기록
+                const existingLogs = JSON.parse(localStorage.getItem('log.json')) || [];
+                existingLogs.push(logJsonFormat);
+                localStorage.setItem('log.json', JSON.stringify(existingLogs));
 
-            alert('시험 답안이 성공적으로 제출되었습니다!');
-            window.location.href = 'index.html'; 
+                alert('시험 답안이 실시간으로 서버에 제출되었습니다!');
+                window.location.href = 'index.html';
+            })
+            .catch(err => {
+                alert('네트워크 오류가 발생했습니다.');
+                console.error(err);
+            });
         }
     </script>
 </body>

@@ -3,137 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>콘테스트</title>
+    <title>콘테스트 시험 및 관리자 시스템</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; }
-        body { background-color: #f5f7fa; color: #333; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .container { background-color: #ffffff; width: 100%; max-width: 800px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 30px; text-align: center; }
-        h1 { color: #2c3e50; margin-bottom: 15px; font-size: 2rem; }
-        p { color: #666; margin-bottom: 25px; }
-        
-        /* 닉네임 입력창 스타일 */
-        .nickname-box { background-color: #edf2f7; padding: 20px; border-radius: 8px; margin-bottom: 25px; }
-        .nickname-box label { font-weight: bold; display: block; margin-bottom: 10px; color: #4a5568; }
-        .nickname-box input { padding: 10px; width: 250px; font-size: 1rem; border: 2px solid #cbd5e0; border-radius: 5px; text-align: center; }
-        .nickname-box input:focus { border-color: #3498db; outline: none; }
-
-        /* 시험 버튼 그리드 */
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
-        
-        .test-link {
-            display: block;
-            background-color: #a0aec0; /* 기본은 비활성화 색상 */
-            color: white;
-            padding: 25px 15px;
-            border-radius: 8px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            text-decoration: none;
-            pointer-events: none; /* 닉네임 입력 전엔 클릭 방지 */
-            transition: transform 0.2s, background-color 0.2s;
-        }
-        /* 닉네임이 입력되면 클래스가 붙어서 활성화됨 */
-        .test-link.active {
-            background-color: #3498db;
-            pointer-events: auto;
-        }
-        .test-link.active:hover { background-color: #2980b9; transform: translateY(-5px); }
-
-        /* 기록 서랍 스타일 */
-        .history-box { margin-top: 40px; text-align: left; border-top: 2px dashed #e2e8f0; padding-top: 25px; }
-        .history-box h3 { color: #2d3748; margin-bottom: 15px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 12px; border-bottom: 1px solid #e2e8f0; text-align: center; }
-        th { background-color: #f7fafc; color: #4a5568; }
+        body { background-color: #f8f9fa; font-family: 'Malgun Gothic', dotum, sans-serif; }
+        .main-container { max-width: 950px; background: #ffffff; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; }
+        .nickname-box { background-color: #ebf1f6; border-radius: 10px; }
+        .nickname-input { max-width: 400px; text-align: center; border: 1px solid #ced4da; color: #212529; }
+        .exam-btn { background-color: #9eacbe; color: white; border: none; padding: 20px 10px; font-size: 1.1rem; font-weight: bold; border-radius: 8px; transition: all 0.2s; }
+        .exam-btn:hover { background-color: #8796a8; color: white; transform: translateY(-2px); }
+        .dashed-line { border-top: 2px dashed #dee2e6; margin: 40px 0; }
+        .table-custom th { background-color: #f1f5f9; color: #333d47; font-weight: bold; border-bottom: 2px solid #e2e8f0; }
+        .table-custom td { color: #4a5568; vertical-align: middle; }
+        .admin-badge { background-color: #dc3545; color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; }
+        .admin-only { display: none; }
+        .mode-toggle-btn { position: absolute; top: 20px; right: 20px; z-index: 10; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📝콘테스트</h1>
-        <p>닉네임을 입력하신 후 응시할 시험을 선택해 주세요.</p>
-        
-        <!-- 닉네임 입력 영역 -->
-        <div class="nickname-box">
-            <label for="nickname">수험자 닉네임 입력</label>
-            <input type="text" id="nickname" placeholder="닉네임을 적어주세요" oninput="checkNickname()">
-        </div>
 
-        <!-- 시험 링크 (초기에는 비활성화 상태) -->
-        <div class="grid-container">
-            <a href="test1.html" class="test-link" id="link1">1번 점묘파(쉬움)시험</a>
-            <a href="test2.html" class="test-link" id="link2">2번 신체파(쉬움)시험</a>
-            <a href="test3.html" class="test-link" id="link3">3번 야수파(쉬움)시험</a>
-            <a href="test4.html" class="test-link" id="link4">4번 입체파(쉬움)시험</a>
-            <a href="test5.html" class="test-link" id="link5">5번 절대파(쉬움)시험</a>
-            <a href="test6.html" class="test-link" id="link6">6번 청기사파(쉬움)시험</a>
-        </div>
+<div class="container my-5 p-4 p-md-5 main-container">
+    <div class="mode-toggle-btn">
+        <button id="toggleAdminBtn" class="btn btn-outline-secondary btn-sm" onclick="toggleAdminMode()"><i class="bi bi-gear-fill me-1"></i> 관리자 모드 전환</button>
+        <button id="exitAdminBtn" class="btn btn-danger btn-sm admin-only" onclick="exitAdminMode()"><i class="bi bi-box-arrow-right me-1"></i> 관리자 로그아웃</button>
+    </div>
+    
+    <div class="text-center mb-4 mt-2">
+        <h1 class="fw-bold d-inline-flex align-items-center justify-content-center text-dark">
+            📝콘테스트 <span id="adminTitleBadge" class="admin-badge ms-2 admin-only">ADMIN</span>
+        </h1>
+        <p class="text-muted mt-3 fs-5">닉네임을 입력하신 후 응시할 시험을 선택해 주세요.</p>
+    </div>
 
-        <!-- 시험 기록 테이블 -->
-        <div class="history-box">
-            <h3></h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>닉네임</th>
-                        <th>응시 시험</th>
-                        <th>제출 시간</th>
-                    </tr>
-                </thead>
-                <tbody id="history-list">
-                    <!-- 기록이 여기에 동적으로 추가됨 -->
-                </tbody>
-            </table>
+    <div class="nickname-box p-4 mb-4 text-center">
+        <label for="nickname" class="form-label fw-bold text-secondary mb-3 fs-5">수험자 닉네임 입력</label>
+        <div class="d-flex justify-content-center">
+            <input type="text" id="nickname" class="form-control form-control-lg nickname-input" placeholder="닉네임을 적어주세요">
         </div>
     </div>
 
-    <script>
-        // 페이지가 로드될 때 기존에 입력했던 닉네임이 있다면 불러오고, 기록도 출력함
-        window.onload = function() {
-            const savedName = localStorage.getItem('currentNickname');
-            if (savedName) {
-                document.getElementById('nickname').value = savedName;
-                checkNickname();
-            }
-            displayHistory();
+    <div class="row g-3 px-2">
+        <div class="col-12 col-md-4"><button class="btn exam-btn w-100" onclick="startExam('점묘파(쉬움)시험')">1번 점묘파(쉬움)시험</button></div>
+        <div class="col-12 col-md-4"><button class="btn exam-btn w-100" onclick="startExam('신체파(쉬움)시험')">2번 신체파(쉬움)시험</button></div>
+        <div class="col-12 col-md-4"><button class="btn exam-btn w-100" onclick="startExam('야수파(쉬움)시험')">3번 야수파(쉬움)시험</button></div>
+        <div class="col-12 col-md-4"><button class="btn exam-btn w-100" onclick="startExam('입체파(쉬움)시험')">4번 입체파(쉬움)시험</button></div>
+        <div class="col-12 col-md-4"><button class="btn exam-btn w-100" onclick="startExam('절대파(쉬움)시험')">5번 절대파(쉬움)시험</button></div>
+        <div class="col-12 col-md-4"><button class="btn exam-btn w-100" onclick="startExam('청기사파(쉬움)시험')">6번 청기사파(쉬움)시험</button></div>
+    </div>
+
+    <div class="dashed-line"></div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold m-0 text-secondary"><i class="bi bi-list-ul me-2"></i>제출 현황(관리자 전용 데이터 기반)</h4>
+        <div>
+            <button class="btn btn-sm btn-outline-primary admin-only me-2" onclick="downloadLogFile()"><i class="bi bi-download me-1"></i> log.json 파일 추출</button>
+            <button class="btn btn-sm btn-outline-danger admin-only" onclick="clearAllData()"><i class="bi bi-trash3-fill me-1"></i> 전체 데이터 초기화</button>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-custom text-center align-middle m-0">
+            <thead>
+                <tr>
+                    <th style="width: 25%;">닉네임</th>
+                    <th style="width: 45%;">응시 시험</th>
+                    <th style="width: 15%;">제출 시간</th>
+                    <th style="width: 15%;" class="admin-only">관리</th>
+                </tr>
+            </thead>
+            <tbody id="resultTableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    let isAdmin = false;
+    const ADMIN_PASSWORD = "1234";
+
+    function toggleAdminMode() {
+        const password = prompt("관리자 비밀번호를 입력하세요:");
+        if (password === ADMIN_PASSWORD) { isAdmin = true; applyModeStyles(); } 
+        else if (password !== null) { alert("비밀번호가 일치하지 않습니다."); }
+    }
+    function exitAdminMode() { isAdmin = false; applyModeStyles(); }
+    function applyModeStyles() {
+        const adminElements = document.querySelectorAll('.admin-only');
+        if (isAdmin) {
+            adminElements.forEach(el => { el.style.setProperty('display', 'inline-block', 'important'); });
+            document.querySelectorAll('th.admin-only, td.admin-only').forEach(el => { el.style.setProperty('display', 'table-cell', 'important'); });
+            document.getElementById('toggleAdminBtn').style.display = 'none';
+        } else {
+            adminElements.forEach(el => { el.style.setProperty('display', 'none', 'important'); });
+            document.getElementById('toggleAdminBtn').style.display = 'block';
         }
+    }
 
-        // 닉네임이 입력되었는지 감시해서 버튼을 활성화/비활성화하는 함수
-        function checkNickname() {
-            const nameInput = document.getElementById('nickname').value.trim();
-            const links = document.querySelectorAll('.test-link');
-            
-            if (nameInput.length > 0) {
-                // 닉네임이 있으면 로컬스토리지에 임시 저장하고 버튼 활성화
-                localStorage.setItem('currentNickname', nameInput);
-                links.forEach(link => link.classList.add('active'));
-            } else {
-                // 없으면 버튼 비활성화
-                localStorage.removeItem('currentNickname');
-                links.forEach(link => link.classList.remove('active'));
-            }
+    function startExam(examTitle) {
+        const nickname = document.getElementById('nickname').value.trim();
+        if (!nickname) { alert('닉네임을 먼저 입력해 주세요.'); return; }
+        
+        localStorage.setItem('currentNickname', nickname);
+        localStorage.setItem('currentExamTitle', examTitle);
+        
+        if (examTitle === '점묘파(쉬움)시험') {
+            window.location.href = 'test1.html';
+        } else if (examTitle === '신체파(쉬움)시험') {
+            window.location.href = 'test2.html';
+        } else if (examTitle === '야수파(쉬움)시험') {
+            window.location.href = 'test3.html';
+        } else if (examTitle === '입체파(쉬움)시험') {
+            window.location.href = 'test4.html';
+        } else if (examTitle === '절대파(쉬움)시험') {
+            window.location.href = 'test5.html';
+        } else if (examTitle === '청기사파(쉬움)시험') {
+            window.location.href = 'test6.html';
+        } else {
+            alert('준비 중인 시험입니다.');
         }
+    }
 
-        // 기록을 가져와서 테이블에 그려주는 함수
-        function displayHistory() {
-            const history = JSON.parse(localStorage.getItem('testHistory')) || [];
-            const listObj = document.getElementById('history-list');
-            listObj.innerHTML = ''; // 초기화
+    function loadHistory() {
+        const history = JSON.parse(localStorage.getItem('log.json')) || [];
+        const tableBody = document.getElementById('resultTableBody');
+        tableBody.innerHTML = '';
+        
+        const displayHistory = [...history].reverse();
+        
+        displayHistory.forEach((item, index) => {
+            const originalIndex = history.length - 1 - index;
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td class="fw-bold">${item.userId}</td>
+                <td>${item.examTitle} - (답안 저장됨)</td>
+                <td class="text-secondary">${item.submittedAt || '-'}</td>
+                <td class="admin-only" style="display: ${isAdmin ? 'table-cell' : 'none'} !important">
+                    <button class="btn btn-danger p-1 py-0" style="font-size:0.8rem;" onclick="deleteRow(${originalIndex})">삭제</button>
+                </td>
+            `;
+            tableBody.appendChild(newRow);
+        });
+        applyModeStyles();
+    }
 
-            if (history.length === 0) {
-                listObj.innerHTML = `<tr><td colspan="3" style="color:#999;">아직 응시 기록이 없습니다.</td></tr>`;
-                return;
-            }
+    function deleteRow(idx) {
+        let history = JSON.parse(localStorage.getItem('log.json')) || [];
+        history.splice(idx, 1);
+        localStorage.setItem('log.json', JSON.stringify(history));
+        loadHistory();
+    }
 
-            // 최신 기록이 위로 오도록 역순 출력
-            history.reverse().forEach(item => {
-                const row = `<tr>
-                    <td><strong>${item.name}</strong></td>
-                    <td>${item.testName}</td>
-                    <td style="color:#718096; font-size:0.9rem;">${item.time}</td>
-                </tr>`;
-                listObj.innerHTML += row;
-            });
-        }
-    </script>
+    function clearAllData() {
+        if(confirm("모든 데이터를 초기화하시겠습니까?")) { localStorage.removeItem('log.json'); loadHistory(); }
+    }
+
+    function downloadLogFile() {
+function submitTest() {
+    const answer1 = document.getElementById('ans1').value.trim();
+    const answer2 = document.getElementById('ans2').value.trim();
+
+    if (!answer1 || !answer2) {
+        alert('모든 문제의 답을 입력해 주세요!');
+        return; 
+    }
+
+    const now = new Date();
+    const timeString = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+
+    // 1. 메인 페이지가 요구하는 데이터 규격에 맞게 오브젝트 생성
+    const logJsonFormat = {
+        "userId": nickname,
+        "examTitle": examTitle,
+        "answer1": answer1,
+        "answer2": answer2,
+        "submittedAt": timeString
+    };
+
+    // 2. 🌟 중요: 반드시 'log.json' 이라는 Key 이름으로 불러오고 저장해야 연동됩니다!
+    const existingLogs = JSON.parse(localStorage.getItem('log.json')) || [];
+    existingLogs.push(logJsonFormat);
+    localStorage.setItem('log.json', JSON.stringify(existingLogs));
+
+    alert('시험 답안이 성공적으로 제출되었습니다!');
+    window.location.href = 'index.html'; 
+}
+    }
+
+    window.onload = loadHistory;
+</script>
 </body>
 </html>
